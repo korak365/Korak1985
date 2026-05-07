@@ -1,0 +1,17 @@
+{
+    "actorSpecification": 1,
+    "name": "airbnb-shadow-inventory-tracker",
+    "title": "Airbnb Shadow Inventory Tracker",
+    "description": "Scrapes property data from Airbnb and VRBO, compares pricing for similar listings, and identifies shadow inventory.",
+    "version": "0.0",
+    "meta": {
+        "templateId": "ai-generated-actor",
+        "generatedBy": "copilot-2026"
+    },
+    "input": "./input_schema.json",
+    "output": "./output_schema.json",
+    "storages": {
+        "dataset": "./dataset_schema.json"
+    },
+    "dockerfile": "../Dockerfile"
+}

@@ -1,0 +1,11 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "Output schema for Airbnb Shadow Inventory Tracker",
+    "properties": {
+        "overview": {
+            "type": "string",
+            "title": "Summary Overview",
+            "template": "{{links.apiDefaultDatasetUrl}}/items?view=overview"
+        }
+    }
+}

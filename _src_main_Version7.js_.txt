@@ -1,0 +1,79 @@
+// Import Apify SDK and Crawlee
+import { Actor } from 'apify';
+import { CheerioCrawler, Dataset } from 'crawlee';
+
+await Actor.init();
+
+// Load actor input
+const {
+    airbnbUrls = [],
+    vrboUrls = [],
+    maxRequestsPerCrawl = 50,
+} = (await Actor.getInput()) ?? {};
+
+const proxyConfiguration = await Actor.createProxyConfiguration();
+
+// Function to scrape property details
+const scrapeProperty = async ($, url, platform) => {
+    const title = $('h1').text().trim();
+    const propertyId = url.split('/').pop().split('?')[0]; // Extract from URL
+    const pricePerNight = $('.price').text().trim() || $('meta[itemprop="price"]').attr('content');
+    const location = $('.location').text().trim() || $('meta[itemprop="address"]').attr('content');
+
+    return { platform, propertyId, title, price: pricePerNight, location, url };
+};
+
+// Airbnb scraper
+const airbnbCrawler = new CheerioCrawler({
+    proxyConfiguration,
+    maxRequestsPerCrawl,
+    async requestHandler({ request, $, log }) {
+        log.info(`Scraping Airbnb listing: ${request.loadedUrl}`);
+        const property = await scrapeProperty($, request.loadedUrl, 'Airbnb');
+        await Dataset.pushData(property);
+    },
+});
+
+// VRBO scraper
+const vrboCrawler = new CheerioCrawler({
+    proxyConfiguration,
+    maxRequestsPerCrawl,
+    async requestHandler({ request, $, log }) {
+        log.info(`Scraping VRBO listing: ${request.loadedUrl}`);
+        const property = await scrapeProperty($, request.loadedUrl, 'VRBO');
+        await Dataset.pushData(property);
+    },
+});
+
+// Run crawlers for each platform
+log.info('Starting Airbnb scraper...');
+await airbnbCrawler.run(airbnbUrls);
+
+log.info('Starting VRBO scraper...');
+await vrboCrawler.run(vrboUrls);
+
+// Comparisons (shadow inventory detection)
+const dataset = await Dataset.getData();
+const listings = dataset.items;
+
+// Identify shadow inventory: potentially overlapping listings
+listings.forEach((listing, index) => {
+    const matchingListings = listings
+        .filter(
+            (otherListing, otherIndex) =>
+                otherIndex !== index &&
+                listing.location === otherListing.location &&
+                listing.price === otherListing.price,
+        )
+        .map((match) => match.url);
+
+    listings[index].listingComparison = matchingListings || [];
+});
+
+// Push the updated data to the dataset
+log.info('Pushing comparison results...');
+for (const listing of listings) {
+    await Dataset.pushData(listing);
+}
+
+await Actor.exit();

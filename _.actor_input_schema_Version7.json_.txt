@@ -1,0 +1,35 @@
+{
+    "title": "Input schema for Airbnb Shadow Inventory Tracker",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "airbnbUrls": {
+            "title": "Airbnb URLs",
+            "type": "array",
+            "description": "List of Airbnb property listing URLs to scrape.",
+            "editor": "requestListSources",
+            "prefill": [
+                {
+                    "url": "https://www.airbnb.com/s/locations"
+                }
+            ]
+        },
+        "vrboUrls": {
+            "title": "VRBO URLs",
+            "type": "array",
+            "description": "List of VRBO property listing URLs to scrape.",
+            "editor": "requestListSources",
+            "prefill": [
+                {
+                    "url": "https://www.vrbo.com/search"
+                }
+            ]
+        },
+        "maxRequestsPerCrawl": {
+            "title": "Max Requests per Crawl",
+            "type": "integer",
+            "description": "Maximum number of pages to scrape per platform.",
+            "default": 50
+        }
+    }
+}

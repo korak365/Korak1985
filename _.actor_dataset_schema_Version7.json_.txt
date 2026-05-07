@@ -1,0 +1,73 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "platform": {
+            "type": "string",
+            "title": "Platform"
+        },
+        "propertyId": {
+            "type": "string",
+            "title": "Property ID"
+        },
+        "title": {
+            "type": "string",
+            "title": "Title"
+        },
+        "price": {
+            "type": "string",
+            "title": "Price per Night"
+        },
+        "location": {
+            "type": "string",
+            "title": "Location"
+        },
+        "url": {
+            "type": "string",
+            "title": "URL"
+        },
+        "listingComparison": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "title": "Matching Listings (if available)"
+        }
+    },
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "transformation": {
+                "fields": ["platform", "propertyId", "title", "price", "url", "listingComparison"]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "platform": {
+                        "label": "Platform",
+                        "format": "text"
+                    },
+                    "propertyId": {
+                        "label": "Property ID",
+                        "format": "text"
+                    },
+                    "title": {
+                        "label": "Title",
+                        "format": "text"
+                    },
+                    "price": {
+                        "label": "Price",
+                        "format": "text"
+                    },
+                    "url": {
+                        "label": "URL",
+                        "format": "link"
+                    },
+                    "listingComparison": {
+                        "label": "Matching Listings",
+                        "format": "array"
+                    }
+                }
+            }
+        }
+    }
+}
